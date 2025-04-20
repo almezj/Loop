@@ -9,6 +9,8 @@ class MapViewModel: NSObject, ObservableObject {
     @Published var errorMessage: String?
     @Published var maxDistance: Double = 20.0 // Default max distance in kilometers
     @Published var isFilteringEnabled: Bool = false
+    @Published var searchQuery: String = ""
+    @Published var isSearchActive: Bool = false
     
     private let locationManager = CLLocationManager()
     private let userId = UUID().uuidString // Random userID for now, we need to change this if we go live
@@ -22,16 +24,27 @@ class MapViewModel: NSObject, ObservableObject {
     }
     
     var filteredMachines: [MachineLocation] {
-        guard isFilteringEnabled, let userLocation = userLocation else {
-            return machines
+        var result = machines
+        
+        // Apply distance filter if enabled
+        if isFilteringEnabled, let userLocation = userLocation {
+            result = result.filter { machine in
+                let machineLocation = CLLocation(latitude: machine.latitude, longitude: machine.longitude)
+                let distanceInKm = userLocation.distance(from: machineLocation) / 1000.0
+                return distanceInKm <= maxDistance
+            }
         }
         
-        // Filter machines based on the maximum distance
-        return machines.filter { machine in
-            let machineLocation = CLLocation(latitude: machine.latitude, longitude: machine.longitude)
-            let distanceInKm = userLocation.distance(from: machineLocation) / 1000.0
-            return distanceInKm <= maxDistance
+        // Apply search filter if there's a search query
+        if !searchQuery.isEmpty {
+            let query = searchQuery.lowercased()
+            result = result.filter { machine in
+                machine.name.lowercased().contains(query) ||
+                machine.address.lowercased().contains(query)
+            }
         }
+        
+        return result
     }
     
     override init() {
@@ -79,6 +92,16 @@ class MapViewModel: NSObject, ObservableObject {
     
     func updateMaxDistance(_ distance: Double) {
         maxDistance = distance
+    }
+    
+    func updateSearchQuery(_ query: String) {
+        searchQuery = query
+        isSearchActive = !query.isEmpty
+    }
+    
+    func clearSearch() {
+        searchQuery = ""
+        isSearchActive = false
     }
     
     func reportMachineUnavailable(_ machine: MachineLocation) {

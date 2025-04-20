@@ -8,13 +8,14 @@ struct MapView: View {
     @State private var showingMachineDetail = false
     @State private var showingFilterOptions = false
     @State private var showDebugInfo = true
+    @State private var isSearching = false
     
     // TODO: Would love to make it so that when user scrolls in the list, the map gets smaller so that more of the list is visible.
     var body: some View {
         ZStack {
             // Map View
             GoogleMapsView(
-                machines: viewModel.isFilteringEnabled ? viewModel.filteredMachines : viewModel.machines,
+                machines: viewModel.filteredMachines,
                 userLocation: viewModel.userLocation,
                 selectedMachineId: $viewModel.selectedMachineId
             )
@@ -44,13 +45,29 @@ struct MapView: View {
                 
                 Spacer()
                 
-                // Machine list at bottom
-                MachineListView(
-                    machines: viewModel.isFilteringEnabled ? viewModel.filteredMachines : viewModel.machines,
-                    userLocation: viewModel.userLocation,
-                    selectedMachineId: $viewModel.selectedMachineId
-                )
-                .frame(height: 200)
+                // Search bar and machine list at bottom
+                VStack(spacing: 0) {
+                    // Search bar
+                    SearchBarView(
+                        searchText: $viewModel.searchQuery,
+                        isSearching: $isSearching,
+                        placeholder: "Search for machines...",
+                        onCancelSearch: {
+                            viewModel.clearSearch()
+                        }
+                    )
+                    .padding(.top, 8)
+                    .padding(.bottom, 4)
+                    
+                    // Machine list
+                    MachineListView(
+                        machines: viewModel.filteredMachines,
+                        userLocation: viewModel.userLocation,
+                        selectedMachineId: $viewModel.selectedMachineId
+                    )
+                    .frame(height: isSearching ? 230 : 200)
+                }
+                .background(Color(.systemBackground))
             }
         }
         .sheet(isPresented: $showingMachineDetail) {
@@ -64,6 +81,9 @@ struct MapView: View {
         }
         .onChange(of: viewModel.selectedMachineId) { newValue, _ in
             showingMachineDetail = newValue != nil
+        }
+        .onChange(of: viewModel.searchQuery) { _, newValue in
+            viewModel.updateSearchQuery(newValue)
         }
         .withLocationPermissionAlert()
     }

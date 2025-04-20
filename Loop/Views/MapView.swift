@@ -47,25 +47,39 @@ struct GoogleMapsView: UIViewRepresentable {
         mapView.camera = camera
         mapView.delegate = context.coordinator
         
-        // If we already have user location, use it
-        if let location = userLocation {
+        // Disable auto-teleport features
+        mapView.settings.setAllGesturesEnabled(true)
+        mapView.settings.scrollGestures = true
+        mapView.settings.zoomGestures = true
+        mapView.settings.rotateGestures = true
+        mapView.settings.tiltGestures = true
+        mapView.settings.compassButton = true
+        mapView.settings.myLocationButton = true
+        
+        // If we already have user location, use it - but only on first load
+        if let location = userLocation, !context.coordinator.initialCameraSet {
             let camera = GMSCameraPosition.camera(withTarget: location.coordinate, zoom: 12)
             mapView.animate(to: camera)
+            context.coordinator.initialCameraSet = true
         }
         
         return mapView
     }
     
     func updateUIView(_ mapView: GMSMapView, context: Context) {
-        // Update camera position when user location changes
-        if let location = userLocation {
-            let camera = GMSCameraPosition.camera(withTarget: location.coordinate, zoom: 12)
-            mapView.animate(to: camera)
-        } else {
-            // Use Dundalk, Ireland as the default location when user location is not available
-            let dundalkCoordinate = CLLocationCoordinate2D(latitude: 54.0047, longitude: -6.3950)
-            let camera = GMSCameraPosition.camera(withTarget: dundalkCoordinate, zoom: 12)
-            mapView.animate(to: camera)
+        // Only update camera position if we haven't set it yet
+        if !context.coordinator.initialCameraSet {
+            if let location = userLocation {
+                let camera = GMSCameraPosition.camera(withTarget: location.coordinate, zoom: 12)
+                mapView.animate(to: camera)
+                context.coordinator.initialCameraSet = true
+            } else {
+                // Use Dundalk, Ireland as the default location when user location is not available
+                let dundalkCoordinate = CLLocationCoordinate2D(latitude: 54.0047, longitude: -6.3950)
+                let camera = GMSCameraPosition.camera(withTarget: dundalkCoordinate, zoom: 12)
+                mapView.animate(to: camera)
+                context.coordinator.initialCameraSet = true
+            }
         }
         
         // Update markers
@@ -94,16 +108,31 @@ struct GoogleMapsView: UIViewRepresentable {
     
     class Coordinator: NSObject, GMSMapViewDelegate {
         var parent: GoogleMapsView
+        var initialCameraSet = false
         
         init(_ parent: GoogleMapsView) {
             self.parent = parent
         }
         
         func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
+            // When tapping on a marker, don't move the camera, just select the machine
             if let machine = parent.machines.first(where: { $0.coordinate.latitude == marker.position.latitude && $0.coordinate.longitude == marker.position.longitude }) {
                 parent.selectedMachineId = machine.id
             }
             return true
+        }
+        
+        // Prevent map from teleporting when tapped
+        func mapView(_ mapView: GMSMapView, didTapAt coordinate: CLLocationCoordinate2D) {
+            // Do nothing, just intercept the tap event
+        }
+        
+        // Intercept camera position changes to prevent auto-teleport
+        func mapView(_ mapView: GMSMapView, willMove gesture: Bool) {
+            // Set initialCameraSet to true when user manually moves the map
+            if gesture {
+                initialCameraSet = true
+            }
         }
     }
 }

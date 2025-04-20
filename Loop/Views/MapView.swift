@@ -14,8 +14,40 @@ struct MapView: View {
                           selectedMachineId: $viewModel.selectedMachineId)
                 .edgesIgnoringSafeArea(.all)
             
+            // Zoom buttons overlay
             VStack {
+                HStack {
+                    Spacer()
+                    VStack(spacing: 10) {
+                        Button(action: {
+                            NotificationCenter.default.post(name: Notification.Name("ZoomIn"), object: nil)
+                        }) {
+                            Image(systemName: "plus")
+                                .font(.system(size: 20, weight: .bold))
+                                .foregroundColor(.primary)
+                                .frame(width: 40, height: 40)
+                                .background(Color(.systemBackground))
+                                .cornerRadius(8)
+                                .shadow(radius: 2)
+                        }
+                        
+                        Button(action: {
+                            NotificationCenter.default.post(name: Notification.Name("ZoomOut"), object: nil)
+                        }) {
+                            Image(systemName: "minus")
+                                .font(.system(size: 20, weight: .bold))
+                                .foregroundColor(.primary)
+                                .frame(width: 40, height: 40)
+                                .background(Color(.systemBackground))
+                                .cornerRadius(8)
+                                .shadow(radius: 2)
+                        }
+                    }
+                    .padding(.trailing, 16)
+                    .padding(.top, 60) // Provide space from the top
+                }
                 Spacer()
+                
                 MachineListView(machines: viewModel.machines,
                               userLocation: viewModel.userLocation,
                               selectedMachineId: $viewModel.selectedMachineId)
@@ -63,6 +95,9 @@ struct GoogleMapsView: UIViewRepresentable {
             context.coordinator.initialCameraSet = true
         }
         
+        // Set up notification observers for zoom buttons
+        context.coordinator.setupZoomNotifications(mapView: mapView)
+        
         return mapView
     }
     
@@ -109,9 +144,54 @@ struct GoogleMapsView: UIViewRepresentable {
     class Coordinator: NSObject, GMSMapViewDelegate {
         var parent: GoogleMapsView
         var initialCameraSet = false
+        private var zoomInObserver: NSObjectProtocol?
+        private var zoomOutObserver: NSObjectProtocol?
         
         init(_ parent: GoogleMapsView) {
             self.parent = parent
+            super.init()
+        }
+        
+        deinit {
+            // Clean up notification observers
+            if let zoomInObserver = zoomInObserver {
+                NotificationCenter.default.removeObserver(zoomInObserver)
+            }
+            if let zoomOutObserver = zoomOutObserver {
+                NotificationCenter.default.removeObserver(zoomOutObserver)
+            }
+        }
+        
+        func setupZoomNotifications(mapView: GMSMapView) {
+            // Set up zoom in observer
+            zoomInObserver = NotificationCenter.default.addObserver(
+                forName: Notification.Name("ZoomIn"),
+                object: nil,
+                queue: .main) { [weak mapView] _ in
+                    guard let mapView = mapView else { return }
+                    let currentZoom = mapView.camera.zoom
+                    let newZoom = min(currentZoom + 1, 20) // Zoom in, max zoom level 20
+                    let camera = GMSCameraPosition.camera(
+                        withTarget: mapView.camera.target,
+                        zoom: newZoom
+                    )
+                    mapView.animate(to: camera)
+                }
+            
+            // Set up zoom out observer
+            zoomOutObserver = NotificationCenter.default.addObserver(
+                forName: Notification.Name("ZoomOut"),
+                object: nil,
+                queue: .main) { [weak mapView] _ in
+                    guard let mapView = mapView else { return }
+                    let currentZoom = mapView.camera.zoom
+                    let newZoom = max(currentZoom - 1, 1) // Zoom out, min zoom level 1
+                    let camera = GMSCameraPosition.camera(
+                        withTarget: mapView.camera.target,
+                        zoom: newZoom
+                    )
+                    mapView.animate(to: camera)
+                }
         }
         
         func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {

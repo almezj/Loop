@@ -12,6 +12,8 @@ struct LoopApp: App {
     // Init maps manager on init else the app crashes
     init() {
         GoogleMapsManager.shared.initialize()
+        // Initialize the location permission manager
+        _ = LocationPermissionManager.shared
     }
     
     var body: some Scene {

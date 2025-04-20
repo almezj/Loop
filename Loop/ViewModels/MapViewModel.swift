@@ -7,16 +7,31 @@ class MapViewModel: NSObject, ObservableObject {
     @Published var userLocation: CLLocation?
     @Published var selectedMachineId: String?
     @Published var errorMessage: String?
+    @Published var maxDistance: Double = 20.0 // Default max distance in kilometers
+    @Published var isFilteringEnabled: Bool = false
     
     private let locationManager = CLLocationManager()
     private let userId = UUID().uuidString // Random userID for now, we need to change this if we go live
     
     // Default location for Dundalk, Ireland
-    private let defaultLocation = CLLocation(latitude: 54.0047, longitude: -6.3950)
+    let defaultLocation = CLLocation(latitude: 54.0047, longitude: -6.3950)
     
     var selectedMachine: MachineLocation? {
         guard let id = selectedMachineId else { return nil }
         return machines.first { $0.id == id }
+    }
+    
+    var filteredMachines: [MachineLocation] {
+        guard isFilteringEnabled, let userLocation = userLocation else {
+            return machines
+        }
+        
+        // Filter machines based on the maximum distance
+        return machines.filter { machine in
+            let machineLocation = CLLocation(latitude: machine.latitude, longitude: machine.longitude)
+            let distanceInKm = userLocation.distance(from: machineLocation) / 1000.0
+            return distanceInKm <= maxDistance
+        }
     }
     
     override init() {
@@ -38,13 +53,22 @@ class MapViewModel: NSObject, ObservableObject {
         // TODO: Add more locations
         let mockMachines = [
             MachineLocation(id: "1", name: "Aldi Dundalk", latitude: 54.0035783439446, longitude: -6.395614506630791, address: "Rampart's Road, Marshes Lower, Louth, A91 Y152"),
-            MachineLocation(id: "2", name: "Lidl Dundalk", latitude: 54.00843345701964, longitude: -6.392631890328877, address: "St Helena Terrace, Townparks, Dundalk, Co. Louth, A91 WK40")
+            MachineLocation(id: "2", name: "Lidl Dundalk", latitude: 54.00843345701964, longitude: -6.392631890328877, address: "St Helena Terrace, Townparks, Dundalk, Co. Louth, A91 WK40"),
+            MachineLocation(id: "3", name: "Tesco Monaghan", latitude: 54.2398, longitude: -6.9683, address: "Monaghan Retail Park, Clones Rd, Knockaconny, Monaghan, H18 Y927")
         ]
         self.machines = mockMachines
     }
     
     func refreshData() {
         loadMachines()
+    }
+    
+    func toggleFiltering() {
+        isFilteringEnabled.toggle()
+    }
+    
+    func updateMaxDistance(_ distance: Double) {
+        maxDistance = distance
     }
     
     func reportMachineUnavailable(_ machine: MachineLocation) {

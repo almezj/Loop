@@ -41,8 +41,8 @@ struct GoogleMapsView: UIViewRepresentable {
     @Binding var selectedMachineId: String?
     
     func makeUIView(context: Context) -> GMSMapView {
-        // Create map with default camera
-        let camera = GMSCameraPosition.camera(withLatitude: 0, longitude: 0, zoom: 12)
+        // Create map with default camera (Dundalk, Ireland)
+        let camera = GMSCameraPosition.camera(withLatitude: 54.0047, longitude: -6.3950, zoom: 12)
         let mapView = GMSMapView(frame: .zero)
         mapView.camera = camera
         mapView.delegate = context.coordinator
@@ -60,6 +60,11 @@ struct GoogleMapsView: UIViewRepresentable {
         // Update camera position when user location changes
         if let location = userLocation {
             let camera = GMSCameraPosition.camera(withTarget: location.coordinate, zoom: 12)
+            mapView.animate(to: camera)
+        } else {
+            // Use Dundalk, Ireland as the default location when user location is not available
+            let dundalkCoordinate = CLLocationCoordinate2D(latitude: 54.0047, longitude: -6.3950)
+            let camera = GMSCameraPosition.camera(withTarget: dundalkCoordinate, zoom: 12)
             mapView.animate(to: camera)
         }
         

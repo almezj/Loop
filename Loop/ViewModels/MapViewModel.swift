@@ -11,6 +11,9 @@ class MapViewModel: NSObject, ObservableObject {
     private let locationManager = CLLocationManager()
     private let userId = UUID().uuidString // Random userID for now, we need to change this if we go live
     
+    // Default location for Dundalk, Ireland
+    private let defaultLocation = CLLocation(latitude: 54.0047, longitude: -6.3950)
+    
     var selectedMachine: MachineLocation? {
         guard let id = selectedMachineId else { return nil }
         return machines.first { $0.id == id }
@@ -20,6 +23,8 @@ class MapViewModel: NSObject, ObservableObject {
         super.init()
         setupLocationManager()
         loadMachines()
+        // Set default location until we get the user's actual location
+        userLocation = defaultLocation
     }
     
     private func setupLocationManager() {

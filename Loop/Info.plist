@@ -3,7 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>We need your location to show nearby machines and calculate distances.</string>
+	<string>Loop needs your location to find the nearest recycling machines, calculate distances, and help you filter by proximity. This helps you find the most convenient recycling options near you.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Loop uses your location to find nearby recycling machines and provide accurate distance information. We only access your location when you're using the app.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>We need camera access to scan barcodes.</string>
 </dict>

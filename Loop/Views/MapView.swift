@@ -79,6 +79,32 @@ struct MapView: View {
                         Text("Location not available")
                             .foregroundColor(.red)
                     }
+                    
+                    Divider()
+                    
+                    Text("Permissions")
+                        .fontWeight(.bold)
+                    
+                    Button("Force Show Permission Alert") {
+                        let permissionManager = LocationPermissionManager.shared
+                        permissionManager.showPermissionAlert = true
+                    }
+                    .padding(.vertical, 5)
+                    .padding(.horizontal, 10)
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
+
+                    Button("Force System Permission Dialog") {
+                        let permissionManager = LocationPermissionManager.shared
+                        permissionManager.forceSystemPermissionRequest()
+                    }
+                    .padding(.vertical, 5)
+                    .padding(.horizontal, 10)
+                    .background(Color.green)
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
+                    .padding(.top, 5)
                 }
                 .padding()
                 .background(Color(.systemBackground).opacity(0.95))
@@ -216,6 +242,7 @@ struct MapView: View {
         .onChange(of: viewModel.selectedMachineId) { newValue, _ in
             showingMachineDetail = newValue != nil
         }
+        .withLocationPermissionAlert()
     }
 }
 

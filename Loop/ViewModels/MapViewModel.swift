@@ -40,12 +40,22 @@ class MapViewModel: NSObject, ObservableObject {
         loadMachines()
         // Set default location until we get the user's actual location
         userLocation = defaultLocation
+        
+        // Check location permissions and show alert if needed
+        let permissionManager = LocationPermissionManager.shared
+        permissionManager.checkLocationAuthorization()
     }
     
     private func setupLocationManager() {
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.requestWhenInUseAuthorization()
+        
+        // Only start updating if permission is granted
+        let permissionManager = LocationPermissionManager.shared
+        if permissionManager.authorizationStatus == .authorizedWhenInUse || 
+           permissionManager.authorizationStatus == .authorizedAlways {
+            locationManager.startUpdatingLocation()
+        }
     }
     
     func loadMachines() {
@@ -105,9 +115,19 @@ extension MapViewModel: CLLocationManagerDelegate {
     }
     
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        // Use our permission manager to handle status updates
+        let permissionManager = LocationPermissionManager.shared
+        
+        // Check if permissions changed and handle accordingly
+        permissionManager.checkAndHandlePermissionChanges()
+        
         switch manager.authorizationStatus {
         case .authorizedWhenInUse, .authorizedAlways:
             locationManager.startUpdatingLocation()
+        case .restricted, .denied:
+            // Show warning through the permission manager
+            permissionManager.permissionDeniedPermanently = true
+            permissionManager.showPermissionAlert = true
         default:
             break
         }

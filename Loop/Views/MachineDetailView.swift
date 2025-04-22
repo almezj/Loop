@@ -15,6 +15,9 @@ struct MachineDetailView: View {
             if machine.currentStatus == .reportedUnavailable {
                 Text("Reported Unavailable")
                     .foregroundColor(.orange)
+            } else if machine.currentStatus == .unknown {
+                Text("Status Unknown")
+                    .foregroundColor(.gray)
             }
             
             // Report History

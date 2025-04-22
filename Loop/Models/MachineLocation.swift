@@ -23,10 +23,13 @@ struct MachineLocation: Identifiable, Codable {
     // Set the machine as "reported unavailable" if the most recent report is "unavailable"
     // We can change this behavior later if we come up with a better way to do this
     var currentStatus: MachineStatus {
+        if reports.isEmpty {
+            return .unknown
+        }
         if let latestReport = reports.sorted(by: { $0.timestamp > $1.timestamp }).first {
             return latestReport.isAvailable ? .available : .reportedUnavailable
         }
-        return .available
+        return .unknown
     }
     
     func distance(from location: CLLocation) -> CLLocationDistance {
@@ -38,4 +41,5 @@ struct MachineLocation: Identifiable, Codable {
 enum MachineStatus {
     case available
     case reportedUnavailable
+    case unknown
 } 

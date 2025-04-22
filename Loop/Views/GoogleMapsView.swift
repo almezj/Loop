@@ -67,6 +67,8 @@ struct GoogleMapsView: UIViewRepresentable {
                 marker.icon = GMSMarker.markerImage(with: .green)
             case .reportedUnavailable:
                 marker.icon = GMSMarker.markerImage(with: .orange)
+            case .unknown:
+                marker.icon = GMSMarker.markerImage(with: .gray)
             }
         }
     }

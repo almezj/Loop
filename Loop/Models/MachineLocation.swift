@@ -1,14 +1,15 @@
 import Foundation
 import CoreLocation
+import SwiftUI
 
-struct MachineReport: Identifiable, Codable {
+struct MachineReport: Identifiable, Codable, Equatable {
     let id: String
     let userId: String
     let timestamp: Date
     let isAvailable: Bool
 }
 
-struct MachineLocation: Identifiable, Codable {
+struct MachineLocation: Identifiable, Codable, Equatable {
     let id: String
     let name: String
     let latitude: Double
@@ -38,8 +39,30 @@ struct MachineLocation: Identifiable, Codable {
     }
 }
 
-enum MachineStatus {
+enum MachineStatus: String, Codable {
     case available
     case reportedUnavailable
     case unknown
+    
+    var color: Color {
+        switch self {
+        case .available:
+            return .green
+        case .reportedUnavailable:
+            return .orange
+        case .unknown:
+            return .gray
+        }
+    }
+    
+    var displayText: String {
+        switch self {
+        case .available:
+            return "Available"
+        case .reportedUnavailable:
+            return "Unavailable"
+        case .unknown:
+            return "Status Unknown"
+        }
+    }
 } 

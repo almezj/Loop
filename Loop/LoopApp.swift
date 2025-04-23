@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import GoogleMaps
+import CoreLocation
 
 @main
 struct LoopApp: App {
@@ -18,17 +20,7 @@ struct LoopApp: App {
     
     var body: some Scene {
         WindowGroup {
-            TabView {
-                MapView()
-                    .tabItem {
-                        Label("Map", systemImage: "map")
-                    }
-                
-                BarcodeScannerView()
-                    .tabItem {
-                        Label("Scan", systemImage: "barcode.viewfinder")
-                    }
-            }
+            MapView()
         }
     }
 }

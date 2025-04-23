@@ -7,11 +7,63 @@ struct GoogleMapsView: UIViewRepresentable {
     let userLocation: CLLocation?
     @Binding var selectedMachineId: String?
     
+    // Helper function to create marker image from SF Symbol
+    private func createMarkerImage(systemName: String, color: UIColor, isSelected: Bool = false) -> UIImage {
+        let config = UIImage.SymbolConfiguration(pointSize: isSelected ? 24 : 16, weight: .regular)
+        let image = UIImage(systemName: systemName, withConfiguration: config)?
+            .withTintColor(UIColor(Color.brandOffWhite), renderingMode: .alwaysTemplate)
+        
+        // Create a larger image to accommodate the circle background and shadow
+        let circleSize = isSelected ? CGSize(width: 40, height: 40) : CGSize(width: 32, height: 32)
+        let padding = CGSize(width: 4, height: 6) // Add padding for shadow
+        let size = CGSize(width: circleSize.width + padding.width * 2, 
+                         height: circleSize.height + padding.height * 2)
+        
+        let renderer = UIGraphicsImageRenderer(size: size)
+        
+        let coloredImage = renderer.image { context in
+            // Add shadow
+            context.cgContext.setShadow(offset: CGSize(width: 0, height: 2), blur: 3, color: UIColor.black.withAlphaComponent(0.3).cgColor)
+            
+            // Draw the circle background with padding
+            let circleRect = CGRect(x: padding.width, 
+                                  y: padding.height, 
+                                  width: circleSize.width, 
+                                  height: circleSize.height)
+            let circlePath = UIBezierPath(ovalIn: circleRect)
+            color.setFill()
+            circlePath.fill()
+            
+            // Calculate the position to center the symbol within the padded circle
+            if let image = image {
+                let imageSize = image.size
+                let x = padding.width + (circleSize.width - imageSize.width) / 2
+                let y = padding.height + (circleSize.height - imageSize.height) / 2
+                image.draw(at: CGPoint(x: x, y: y))
+            }
+        }
+        
+        return coloredImage
+    }
+    
     func makeUIView(context: Context) -> GMSMapView {
         // Create map with default camera (Dundalk, Ireland)
         let camera = GMSCameraPosition.camera(withLatitude: 54.0047, longitude: -6.3950, zoom: 12)
         let mapView = GMSMapView(frame: .zero, camera: camera)
         mapView.delegate = context.coordinator
+        
+        // Apply black and white map style
+        do {
+            if let styleURL = Bundle.main.url(forResource: "MapStyle", withExtension: "json") {
+                mapView.mapStyle = try GMSMapStyle(contentsOfFileURL: styleURL)
+            }
+        } catch {
+            print("Failed to load map style: \(error)")
+        }
+        
+        // Enable user location features
+        mapView.isMyLocationEnabled = true
+        mapView.settings.myLocationButton = false // We have our own button
         
         // Disable auto-teleport features
         mapView.settings.setAllGesturesEnabled(true)
@@ -20,7 +72,6 @@ struct GoogleMapsView: UIViewRepresentable {
         mapView.settings.rotateGestures = true
         mapView.settings.tiltGestures = true
         mapView.settings.compassButton = true
-        mapView.settings.myLocationButton = true
         
         // If we already have user location, use it - but only on first load
         if let location = userLocation, !context.coordinator.initialCameraSet {
@@ -31,6 +82,39 @@ struct GoogleMapsView: UIViewRepresentable {
         
         // Set up notification observers for zoom buttons
         context.coordinator.setupZoomNotifications(mapView: mapView)
+        
+        // Set up notification observer for centering on user location
+        NotificationCenter.default.addObserver(
+            forName: Notification.Name("CenterOnUserLocation"),
+            object: nil,
+            queue: .main
+        ) { [weak mapView] _ in
+            guard let mapView = mapView,
+                  let userLocation = mapView.myLocation else { return }
+            
+            let camera = GMSCameraPosition.camera(
+                withTarget: userLocation.coordinate,
+                zoom: mapView.camera.zoom
+            )
+            mapView.animate(to: camera)
+        }
+        
+        // Set up notification observer for centering on specific location
+        NotificationCenter.default.addObserver(
+            forName: Notification.Name("CenterOnLocation"),
+            object: nil,
+            queue: .main
+        ) { [weak mapView] notification in
+            guard let mapView = mapView,
+                  let userInfo = notification.userInfo,
+                  let coordinate = userInfo["coordinate"] as? CLLocationCoordinate2D else { return }
+            
+            let camera = GMSCameraPosition.camera(
+                withTarget: coordinate,
+                zoom: 15 // Zoom in closer when showing a specific machine
+            )
+            mapView.animate(to: camera)
+        }
         
         return mapView
     }
@@ -60,15 +144,31 @@ struct GoogleMapsView: UIViewRepresentable {
             marker.snippet = machine.address
             marker.map = mapView
             
-            // TODO: Make markers clickable and maybe change the visual?
-            // Set marker color based on current status
+            // Set marker icon based on current status using SF Symbols
+            let isSelected = machine.id == selectedMachineId
             switch machine.currentStatus {
             case .available:
-                marker.icon = GMSMarker.markerImage(with: .green)
+                marker.icon = createMarkerImage(
+                    systemName: "checkmark.circle.fill",
+                    color: .systemGreen,
+                    isSelected: isSelected
+                )
             case .reportedUnavailable:
-                marker.icon = GMSMarker.markerImage(with: .orange)
+                marker.icon = createMarkerImage(
+                    systemName: "xmark.circle.fill",
+                    color: .systemOrange,
+                    isSelected: isSelected
+                )
             case .unknown:
-                marker.icon = GMSMarker.markerImage(with: .gray)
+                marker.icon = createMarkerImage(
+                    systemName: "questionmark.circle.fill",
+                    color: .systemGray,
+                    isSelected: isSelected
+                )
+            }
+            
+            if isSelected {
+                marker.zIndex = 1 // Bring selected marker to front
             }
         }
     }
@@ -82,6 +182,8 @@ struct GoogleMapsView: UIViewRepresentable {
         var initialCameraSet = false
         private var zoomInObserver: NSObjectProtocol?
         private var zoomOutObserver: NSObjectProtocol?
+        private var centerLocationObserver: NSObjectProtocol?
+        private var centerOnLocationObserver: NSObjectProtocol?
         
         init(_ parent: GoogleMapsView) {
             self.parent = parent
@@ -95,6 +197,12 @@ struct GoogleMapsView: UIViewRepresentable {
             }
             if let zoomOutObserver = zoomOutObserver {
                 NotificationCenter.default.removeObserver(zoomOutObserver)
+            }
+            if let centerLocationObserver = centerLocationObserver {
+                NotificationCenter.default.removeObserver(centerLocationObserver)
+            }
+            if let centerOnLocationObserver = centerOnLocationObserver {
+                NotificationCenter.default.removeObserver(centerOnLocationObserver)
             }
         }
         

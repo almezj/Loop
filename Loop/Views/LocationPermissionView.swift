@@ -81,27 +81,21 @@ struct LocationPermissionView: View {
     }
 }
 
-struct LocationPermissionAlert: ViewModifier {
-    @ObservedObject var permissionManager = LocationPermissionManager.shared
-    
-    func body(content: Content) -> some View {
-        ZStack {
-            content
-            
-            if permissionManager.showPermissionAlert {
-                Color.black.opacity(0.4)
-                    .edgesIgnoringSafeArea(.all)
-                
-                LocationPermissionView()
-                    .transition(.scale)
-            }
-        }
-        .animation(.easeInOut, value: permissionManager.showPermissionAlert)
-    }
-}
-
-extension View {
-    func withLocationPermissionAlert() -> some View {
-        modifier(LocationPermissionAlert())
-    }
-} 
+//struct LocationPermissionAlert: ViewModifier {
+//    @ObservedObject var permissionManager = LocationPermissionManager.shared
+//    
+//    func body(content: Content) -> some View {
+//        ZStack {
+//            content
+//            
+//            if permissionManager.showPermissionAlert {
+//                Color.black.opacity(0.4)
+//                    .edgesIgnoringSafeArea(.all)
+//                
+//                LocationPermissionView()
+//                    .transition(.scale)
+//            }
+//        }
+//        .animation(.easeInOut, value: permissionManager.showPermissionAlert)
+//    }
+//}

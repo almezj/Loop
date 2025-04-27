@@ -52,6 +52,9 @@ struct GoogleMapsView: UIViewRepresentable {
         let mapView = GMSMapView(frame: .zero, camera: camera)
         mapView.delegate = context.coordinator
         
+        // Ensure user interaction is enabled
+        mapView.isUserInteractionEnabled = true
+        
         // Apply black and white map style
         do {
             if let styleURL = Bundle.main.url(forResource: "MapStyle", withExtension: "json") {

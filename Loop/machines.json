@@ -1,0 +1,370 @@
+[
+  {
+    "id": "1",
+    "name": "Tesco Metro",
+    "latitude": 54.2464187,
+    "longitude": -6.969039299999999,
+    "address": "Dawson St, Mullaghmonaghan, Monaghan, H18 AH73, Ireland",
+    "reports": []
+  },
+  {
+    "id": "2",
+    "name": "ALDI",
+    "latitude": 53.9705435,
+    "longitude": -6.716333,
+    "address": "Riverside Road, Magheross, Monaghan, A81 TK35, Ireland",
+    "reports": []
+  },
+  {
+    "id": "3",
+    "name": "Aldi Monaghan (Under Construction)",
+    "latitude": 54.2455637,
+    "longitude": -6.9704507,
+    "address": "15 R162, Tirkeenan, Monaghan, Ireland",
+    "reports": []
+  },
+  {
+    "id": "4",
+    "name": "Lidl",
+    "latitude": 54.25224189999999,
+    "longitude": -6.967078099999999,
+    "address": "North Rd, Kilnacloy, Monaghan, H18 C927, Ireland",
+    "reports": []
+  },
+  {
+    "id": "5",
+    "name": "Lidl",
+    "latitude": 54.12291,
+    "longitude": -6.742599999999999,
+    "address": "Monaghan Rd, Drumillard Little, Castleblayney, Co. Monaghan, A75 EK44, Ireland",
+    "reports": []
+  },
+  {
+    "id": "6",
+    "name": "Lidl",
+    "latitude": 53.9681416,
+    "longitude": -6.7148634,
+    "address": "Ardee Rd, Magheross, Carrickmacross, Co. Monaghan, A81 FD70, Ireland",
+    "reports": []
+  },
+  {
+    "id": "7",
+    "name": "Fleming's SuperValu Monaghan",
+    "latitude": 54.24839979999999,
+    "longitude": -6.969812399999999,
+    "address": "Church Square, Roosky, Monaghan, H18 WK60, Ireland",
+    "reports": []
+  },
+  {
+    "id": "8",
+    "name": "O'Gorman's SuperValu",
+    "latitude": 53.9776179,
+    "longitude": -6.7202635,
+    "address": "Market Square Shopping Centre, Drummond Etra, Carrickmacross, Co. Monaghan, A81 V389, Ireland",
+    "reports": []
+  },
+  {
+    "id": "9",
+    "name": "SuperValu Clones",
+    "latitude": 54.1812669,
+    "longitude": -7.2342236,
+    "address": "Fermanagh St, Crossmoyle, Clones, Co. Monaghan, H23 FE08, Ireland",
+    "reports": []
+  },
+  {
+    "id": "10",
+    "name": "SuperValu Castleblayney - McMahon's",
+    "latitude": 54.1208532,
+    "longitude": -6.737668999999999,
+    "address": "Glencarn Town Centre, Drumillard Little, Castleblayney, Co. Monaghan, Ireland",
+    "reports": []
+  },
+  {
+    "id": "11",
+    "name": "Centra Scotstown",
+    "latitude": 54.2776541,
+    "longitude": -7.0674152,
+    "address": "Main St, Bough, Monaghan, H18 TP21, Ireland",
+    "reports": []
+  },
+  {
+    "id": "12",
+    "name": "Centra Emyvale",
+    "latitude": 54.339491,
+    "longitude": -6.959629,
+    "address": "Main St, Scarnageeragh Or Emyvale, Monaghan, H18 E772, Ireland",
+    "reports": []
+  },
+  {
+    "id": "13",
+    "name": "Centra Castleblayney",
+    "latitude": 54.1205785,
+    "longitude": -6.7348003,
+    "address": "Main St, Drumillard Little, Monaghan, A75 XT85, Ireland",
+    "reports": []
+  },
+  {
+    "id": "14",
+    "name": "Centra Ballybay",
+    "latitude": 54.1298414,
+    "longitude": -6.902308199999999,
+    "address": "Castleblayney Rd, Cornamucklaglass, Monaghan, A75 K682, Ireland",
+    "reports": []
+  },
+  {
+    "id": "15",
+    "name": "Centra",
+    "latitude": 54.4145882,
+    "longitude": -7.164615899999999,
+    "address": "16-18 Augher Rd, Clogher BT76 0AD, United Kingdom",
+    "reports": []
+  },
+  {
+    "id": "16",
+    "name": "Centra",
+    "latitude": 54.46167980000001,
+    "longitude": -7.0282262,
+    "address": "40-42 Main St, Ballygawley, Dungannon BT70 2HE, United Kingdom",
+    "reports": []
+  },
+  {
+    "id": "17",
+    "name": "Dunnes Stores",
+    "latitude": 54.24629210000001,
+    "longitude": -6.9715089,
+    "address": "Dawson St, Mullaghmonaghan, Monaghan, Ireland",
+    "reports": []
+  },
+  {
+    "id": "18",
+    "name": "Dunnes Stores Newry",
+    "latitude": 54.1760161,
+    "longitude": -6.3424181,
+    "address": "Kingsway Arcade - Old Creamery, Monaghan St, Newry BT35 6AA, United Kingdom",
+    "reports": []
+  },
+  {
+    "id": "19",
+    "name": "Spar",
+    "latitude": 54.2390412,
+    "longitude": -6.9681687,
+    "address": "The Glen, Killygowan, Monaghan, Ireland",
+    "reports": []
+  },
+  {
+    "id": "20",
+    "name": "Eurospar (Cloughvalley Stores)",
+    "latitude": 53.980428,
+    "longitude": -6.7179362,
+    "address": "20 Castleblaney Rd, Cloghvally Upper, Carrickmacross, Co. Monaghan, A81 FW58, Ireland",
+    "reports": []
+  },
+  {
+    "id": "21",
+    "name": "Tesco Extra",
+    "latitude": 53.9981612,
+    "longitude": -6.4045893,
+    "address": "Avenue Rd, Townparks, Dundalk, Co. Louth, A91 PK74, Ireland",
+    "reports": []
+  },
+  {
+    "id": "22",
+    "name": "Tesco Extra",
+    "latitude": 53.70130169999999,
+    "longitude": -6.3734774,
+    "address": "Donore Rd, Rathmullan, Drogheda, Co. Louth, A92 X820, Ireland",
+    "reports": []
+  },
+  {
+    "id": "23",
+    "name": "Tesco Metro",
+    "latitude": 54.0065991,
+    "longitude": -6.4058324,
+    "address": "Longwalk Shopping Centre, Demesne, Dundalk, Co. Louth, A91 Y7H1, Ireland",
+    "reports": []
+  },
+  {
+    "id": "24",
+    "name": "ALDI",
+    "latitude": 54.0166702,
+    "longitude": -6.399241,
+    "address": "Newry Rd, Lisdoo, Louth, A91 HD79, Ireland",
+    "reports": []
+  },
+  {
+    "id": "25",
+    "name": "ALDI",
+    "latitude": 54.0032985,
+    "longitude": -6.3955715,
+    "address": "Rampart's Road, Marshes Lower, Louth, A91 Y152, Ireland",
+    "reports": []
+  },
+  {
+    "id": "26",
+    "name": "Lidl",
+    "latitude": 54.0081893,
+    "longitude": -6.39261,
+    "address": "St Helena Terrace, Townparks, Dundalk, Co. Louth, A91 WK40, Ireland",
+    "reports": []
+  },
+  {
+    "id": "27",
+    "name": "Lidl",
+    "latitude": 53.9975,
+    "longitude": -6.40329,
+    "address": "Avenue Rd, Marshes Lower, Dundalk, Co. Louth, A91 XN36, Ireland",
+    "reports": []
+  },
+  {
+    "id": "28",
+    "name": "SuperValu",
+    "latitude": 53.9684677,
+    "longitude": -6.3870363,
+    "address": "Unit 1, The Fairways Centre, Dublin Rd, Haggardstown, Dundalk, Co. Louth, A91 EYX9, Ireland",
+    "reports": []
+  },
+  {
+    "id": "29",
+    "name": "Daybreak",
+    "latitude": 53.99727739999999,
+    "longitude": -6.3742592,
+    "address": "13-15 Hazel Ct, Bay Estate, Dundalk, Co. Louth, A91 C9HH, Ireland",
+    "reports": []
+  },
+  {
+    "id": "30",
+    "name": "Centra Castletown Road",
+    "latitude": 54.014096,
+    "longitude": -6.4170133,
+    "address": "Maxol Service Station, Castletown Rd, Townparks, Dundalk, Co. Louth, A91 NHP5, Ireland",
+    "reports": []
+  },
+  {
+    "id": "31",
+    "name": "Centra",
+    "latitude": 53.9958682,
+    "longitude": -6.396391299999999,
+    "address": "Unit 1/2, Greenacres Shopping Centre, The Long Avenue, Marshes Lower, Dundalk, Co. Louth, A91 RD88, Ireland",
+    "reports": []
+  },
+  {
+    "id": "32",
+    "name": "Centra Blackrock, Louth",
+    "latitude": 53.964209,
+    "longitude": -6.3647747,
+    "address": "Main St, Haggardstown, Co. Louth, A91 CH7A, Ireland",
+    "reports": []
+  },
+  {
+    "id": "33",
+    "name": "Centra",
+    "latitude": 53.98837529999999,
+    "longitude": -6.398124,
+    "address": "Oriel Service Station, Dublin Rd, Marshes Upper, Dundalk, Co. Louth, Ireland",
+    "reports": []
+  },
+  {
+    "id": "34",
+    "name": "Centra Dromiskin",
+    "latitude": 53.9215377,
+    "longitude": -6.4007958,
+    "address": "Chapel Road, Co. Louth, A91 H0X6, Ireland",
+    "reports": []
+  },
+  {
+    "id": "35",
+    "name": "Dunnes Stores",
+    "latitude": 54.0002617,
+    "longitude": -6.3987858,
+    "address": "Marshes Shopping Ctr, Dunnes, Stores, Marshes Avenue, Marshes Lower, Dundalk, Co. Louth, A91 RW50, Ireland",
+    "reports": []
+  },
+  {
+    "id": "36",
+    "name": "Dunnes Stores",
+    "latitude": 54.0079258,
+    "longitude": -6.4149692,
+    "address": "\u00c1rd Easmuinn, Demesne, Dundalk, Co. Louth, A91 XH34, Ireland",
+    "reports": []
+  },
+  {
+    "id": "37",
+    "name": "Marshes Shopping Centre",
+    "latitude": 54.0002637,
+    "longitude": -6.397797,
+    "address": "River Ln, Marshes Lower, Dundalk, Co. Louth, Ireland",
+    "reports": []
+  },
+  {
+    "id": "38",
+    "name": "Dunnes Stores",
+    "latitude": 53.9857532,
+    "longitude": -6.3799988,
+    "address": "Hoey's Ln, Neighbourhood, Dundalk, Co. Louth, A91 AW27, Ireland",
+    "reports": []
+  },
+  {
+    "id": "39",
+    "name": "Spar Supermarket Service Station - Dundalk",
+    "latitude": 53.99990709999999,
+    "longitude": -6.416140100000001,
+    "address": "Carrickmacross Rd, R178, Dundalk, Co. Louth, A91 YYD3, Ireland",
+    "reports": []
+  },
+  {
+    "id": "40",
+    "name": "EUROSPAR Crossmaglen",
+    "latitude": 54.0803606,
+    "longitude": -6.605971599999999,
+    "address": "8 Newry Rd, Crossmaglen, Newry BT35 9BN, United Kingdom",
+    "reports": []
+  },
+  {
+    "id": "41",
+    "name": "EUROSPAR Banbridge",
+    "latitude": 54.3492691,
+    "longitude": -6.2755721,
+    "address": "94 Scarva St, Banbridge BT32 3AD, United Kingdom",
+    "reports": []
+  },
+  {
+    "id": "42",
+    "name": "EUROSPAR",
+    "latitude": 53.71988229999999,
+    "longitude": -6.340462,
+    "address": "Bredin St, Yellowbatter, Drogheda, Co. Louth, Ireland",
+    "reports": []
+  },
+  {
+    "id": "43",
+    "name": "Mulkerns Eurospar",
+    "latitude": 54.1410642,
+    "longitude": -6.3606753,
+    "address": "51A Forkhill Rd, Cloughoge, Newry BT35 8QY, United Kingdom",
+    "reports": []
+  },
+  {
+    "id": "44",
+    "name": "EUROSPAR Newcastle Road",
+    "latitude": 54.0693274,
+    "longitude": -5.989015999999999,
+    "address": "74 Newcastle Rd, Kilkeel, Newry BT34 4NJ, United Kingdom",
+    "reports": []
+  },
+  {
+    "id": "45",
+    "name": "EUROSPAR Greencastle Street",
+    "latitude": 54.0604684,
+    "longitude": -6.0098356,
+    "address": "55B Greencastle St, Kilkeel, Newry BT34 4BH, United Kingdom",
+    "reports": []
+  },
+  {
+    "id": "46",
+    "name": "EUROSPAR",
+    "latitude": 53.5817062,
+    "longitude": -6.135087299999999,
+    "address": "Shopping Centre, Skerries Point, Barnageeragh Rd, Townparks, Skerries, Co. Dublin, K34 KC92, Ireland",
+    "reports": []
+  }
+]

@@ -33,4 +33,10 @@ extension Color {
             opacity: Double(a) / 255
         )
     }
-} 
+}
+
+extension View {
+    func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
+        clipShape(RoundedCorner(radius: radius, corners: corners))
+    }
+}

@@ -72,14 +72,45 @@ class MapViewModel: NSObject, ObservableObject {
     }
     
     func loadMachines() {
-        // Hardcoded locations for now? If we have time we can get the locations from the API
-        // TODO: Add more locations
-        let mockMachines = [
-            MachineLocation(id: "1", name: "Aldi Dundalk", latitude: 54.0035783439446, longitude: -6.395614506630791, address: "Rampart's Road, Marshes Lower, Louth, A91 Y152"),
-            MachineLocation(id: "2", name: "Lidl Dundalk", latitude: 54.00843345701964, longitude: -6.392631890328877, address: "St Helena Terrace, Townparks, Dundalk, Co. Louth, A91 WK40"),
-            MachineLocation(id: "3", name: "Tesco Monaghan", latitude: 54.2398, longitude: -6.9683, address: "Monaghan Retail Park, Clones Rd, Knockaconny, Monaghan, H18 Y927")
-        ]
-        self.machines = mockMachines
+        // Try to load from UserDefaults first
+        if let savedData = UserDefaults.standard.data(forKey: "machines") {
+            do {
+                let decoder = JSONDecoder()
+                decoder.dateDecodingStrategy = .iso8601
+                let loadedMachines = try decoder.decode([MachineLocation].self, from: savedData)
+                self.machines = loadedMachines
+                return
+            } catch {
+                print("Failed to load machines from UserDefaults: \(error)")
+            }
+        }
+        // Fallback to bundled JSON file
+        if let url = Bundle.main.url(forResource: "machines", withExtension: "json") {
+            do {
+                let data = try Data(contentsOf: url)
+                let decoder = JSONDecoder()
+                decoder.dateDecodingStrategy = .iso8601
+                let loadedMachines = try decoder.decode([MachineLocation].self, from: data)
+                self.machines = loadedMachines
+            } catch {
+                print("Failed to load machines from JSON: \(error)")
+                self.machines = []
+            }
+        } else {
+            print("machines.json not found in bundle")
+            self.machines = []
+        }
+    }
+    
+    func saveMachines() {
+        do {
+            let encoder = JSONEncoder()
+            encoder.dateEncodingStrategy = .iso8601
+            let data = try encoder.encode(machines)
+            UserDefaults.standard.set(data, forKey: "machines")
+        } catch {
+            print("Failed to save machines to UserDefaults: \(error)")
+        }
     }
     
     func refreshData() {
@@ -105,24 +136,24 @@ class MapViewModel: NSObject, ObservableObject {
     }
     
     func reportMachineUnavailable(_ machine: MachineLocation) {
-        // TODO: Implement Firebase integration to make this work similarly to Waze
         if let index = machines.firstIndex(where: { $0.id == machine.id }) {
             let report = MachineReport(id: UUID().uuidString,
                                      userId: userId,
                                      timestamp: Date(),
                                      isAvailable: false)
             machines[index].reports.append(report)
+            saveMachines()
         }
     }
     
     func reportMachineAvailable(_ machine: MachineLocation) {
-        // TODO: Same, implement Firebase integration
         if let index = machines.firstIndex(where: { $0.id == machine.id }) {
             let report = MachineReport(id: UUID().uuidString,
                                      userId: userId,
                                      timestamp: Date(),
                                      isAvailable: true)
             machines[index].reports.append(report)
+            saveMachines()
         }
     }
 }

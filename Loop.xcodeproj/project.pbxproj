@@ -19,6 +19,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
+				Views/MachineListView.swift,
 			);
 			target = D0FD2D222D9FCD5F00D1F530 /* Loop */;
 		};

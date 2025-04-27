@@ -23,7 +23,7 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Loop needs your location to find the nearest recycling machines, calculate distances, and help you filter by proximity. This helps you find the most convenient recycling options near you.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Loop uses your location to find nearby recycling machines and provide accurate distance information. We only access your location when you're using the app.</string>
+	<string>Loop uses your location to find nearby recycling machines and provide accurate distance information. We only access your location when you&apos;re using the app.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>We need camera access to scan barcodes.</string>
 	<key>UIApplicationSceneManifest</key>
@@ -32,7 +32,14 @@
 		<false/>
 	</dict>
 	<key>UILaunchScreen</key>
-	<dict/>
+	<dict>
+		<key>UIImageRespectsSafeAreaInsets</key>
+		<true/>
+		<key>UIColorName</key>
+		<string>LaunchScreenBackgroundColor</string>
+		<key>UIImageName</key>
+		<string>launchscreenlogo</string>
+	</dict>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>

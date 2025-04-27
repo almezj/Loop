@@ -234,9 +234,7 @@ struct MapView: View {
                     .disabled(nearestAvailableMachine == nil)
                     
                     // Scanner button
-                    Button(action: {
-                        // TODO: Navigate to scanner
-                    }) {
+                    NavigationLink(destination: BarcodeScannerView()) {
                         VStack(spacing: 8) {
                             Image(systemName: "barcode.viewfinder")
                                 .font(.system(size: 32))

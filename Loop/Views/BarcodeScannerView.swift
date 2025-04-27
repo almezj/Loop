@@ -7,12 +7,20 @@ import UIKit
 struct BarcodeScannerView: View {
     @StateObject private var viewModel = ScannerViewModel()
     @State private var showingCamera = false
+    @State private var mockBarcode = ""
     
     var body: some View {
         VStack(spacing: 20) {
             switch viewModel.scanStatus {
             case .idle:
-                Button(action: { showingCamera = true }) {
+                Button(action: {
+                    #if targetEnvironment(simulator)
+                    // In simulator, show test mode
+                    viewModel.scanStatus = .scanning
+                    #else
+                    checkCameraPermission()
+                    #endif
+                }) {
                     Text("Start Scanning")
                         .foregroundColor(.white)
                         .padding()
@@ -21,9 +29,45 @@ struct BarcodeScannerView: View {
                 }
                 
             case .scanning:
+                #if targetEnvironment(simulator)
+                // Simulator test mode
+                VStack(spacing: 20) {
+                    Text("Simulator Test Mode")
+                        .font(.headline)
+                    
+                    // Mock camera view
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.3))
+                        .frame(height: 300)
+                        .overlay(
+                            Text("Camera Preview")
+                                .foregroundColor(.white)
+                        )
+                    
+                    // Test barcode input
+                    TextField("Enter test barcode", text: $mockBarcode)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .padding()
+                    
+                    Button(action: {
+                        if !mockBarcode.isEmpty {
+                            viewModel.processScanResult(mockBarcode)
+                            mockBarcode = ""
+                        }
+                    }) {
+                        Text("Simulate Scan")
+                            .foregroundColor(.white)
+                            .padding()
+                            .background(Color.blue)
+                            .cornerRadius(10)
+                    }
+                }
+                .padding()
+                #else
                 CameraView { result in
                     viewModel.processScanResult(result)
                 }
+                #endif
                 
             case .success:
                 VStack {
@@ -32,6 +76,11 @@ struct BarcodeScannerView: View {
                         .font(.system(size: 60))
                     Text("Success!")
                         .font(.title)
+                    if let result = viewModel.scanResult {
+                        Text("Barcode: \(result)")
+                            .font(.subheadline)
+                            .foregroundColor(.gray)
+                    }
                     Button(action: viewModel.resetScan) {
                         Text("Scan Again")
                             .foregroundColor(.white)
@@ -63,23 +112,27 @@ struct BarcodeScannerView: View {
             }
         }
         .padding()
-        .onAppear {
-            checkCameraPermission()
-        }
+        .navigationTitle("Scan Barcode")
     }
     
     private func checkCameraPermission() {
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized:
-            showingCamera = true
+            viewModel.scanStatus = .scanning
         case .notDetermined:
             AVCaptureDevice.requestAccess(for: .video) { granted in
                 if granted {
-                    showingCamera = true
+                    DispatchQueue.main.async {
+                        viewModel.scanStatus = .scanning
+                    }
                 }
             }
-        default:
-            break
+        case .denied, .restricted:
+            viewModel.scanStatus = .error
+            viewModel.errorMessage = "Camera access is required to scan barcodes. Please enable camera access in Settings."
+        @unknown default:
+            viewModel.scanStatus = .error
+            viewModel.errorMessage = "Unknown camera authorization status"
         }
     }
 }
@@ -119,7 +172,11 @@ struct CameraView: UIViewControllerRepresentable {
         return viewController
     }
     
-    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
+        if let previewLayer = uiViewController.view.layer.sublayers?.first as? AVCaptureVideoPreviewLayer {
+            previewLayer.frame = uiViewController.view.layer.bounds
+        }
+    }
     
     func makeCoordinator() -> Coordinator {
         Coordinator(self)

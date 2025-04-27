@@ -20,7 +20,9 @@ struct LoopApp: App {
     
     var body: some Scene {
         WindowGroup {
-            MapView()
+            NavigationView {
+                MapView()
+            }
         }
     }
 }
